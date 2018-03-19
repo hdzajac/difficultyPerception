@@ -318,7 +318,8 @@ var loadGame = function (game, version) {
     window.game = game;
     window.version = version;
     window.gameSpeed = 0;
-    window.experimentTime = 30000;
+    window.experimentTime = 3000;
+    window.experimentFinished = false;
 
     window.reset = function (repeat) {
         running = false;
@@ -338,6 +339,33 @@ var loadGame = function (game, version) {
         cursorSize = 1;
         if(!repeat)
             trial++;
+    };
+
+    window.endEpisode = function (repeat) {
+        running = false;
+
+        //handleGameLoading("1", "1");
+        if(window.game == 1){
+            if(window.version == "1"){
+                window.version = "2";
+            }else{
+                window.game = 2;
+                window.version = "1"
+            }
+        }
+        else{
+            if(window.version == "1"){
+                window.version = "2";
+            }else{
+                window.game = 2;
+                window.version = "1";
+                window.gameBackground = '#d1d8e0';
+                window.experimentFinished = true;
+            }
+        }
+        //window.game = 1;
+        //window.version = "1";
+        window.setup();
     };
 
     window.createTargets = function(){
@@ -445,7 +473,7 @@ var loadGame = function (game, version) {
             }
         } else{
             if(collidePointRect(mouseX, mouseY, startButtonArea.x, startButtonArea.y, startButtonArea.width, startButtonArea.height)) {
-                setTimeout(reset, window.experimentTime)
+                setTimeout(endEpisode, window.experimentTime)
                 running = true;
                 startTime = new Date();
                 startPosition = {x:mouseX, y:mouseY};
@@ -495,7 +523,11 @@ var loadGame = function (game, version) {
             fill(0);
             textSize(18);
             textAlign(CENTER);
-            text('Click mouse here\nto start trial #' + (trial + 1), startButtonArea.x + 0.5 * startButtonArea.width, startButtonArea.y + 0.5 * startButtonArea.height - 0.5);
+            if(!window.experimentFinished)
+                text('Click mouse here\nto start trial #' + (trial + 1), startButtonArea.x + 0.5 * startButtonArea.width, startButtonArea.y + 0.5 * startButtonArea.height - 0.5);
+            else{
+                text('Experiment finished.', startButtonArea.x + 0.5 * startButtonArea.width, startButtonArea.y + 0.5 * startButtonArea.height - 0.5);
+            }
         } else {
             if(mode == "bubble") {
                 cursorSize = -1;
@@ -571,9 +603,10 @@ var loadGame = function (game, version) {
             this.acceleration.mult(0);
 
             // If current target hits the ground before being clicked...
+            /*
             if (this.isCurrentTarget && this.position.y > (height - this.r - 1)) {
                 resetEpisode(true);	// ... the trial is repeated
-            }
+            }*/
         }
         else if(window.game == 2){  // Circles left to right
            this.position.x -= window.gameSpeed;
