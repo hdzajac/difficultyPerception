@@ -5,28 +5,32 @@
     <title>Form</title>
     <link href="/css/style.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="/js/p5.js"></script>
+    <script src="/js/p5.collide2d.js"></script>
 </head>
 <body>
 
+
 <div class="container">
-    <div class="jumbotron">
-        <h1 class="display-4">Game</h1>
-        <p class="lead">Based on the id parameter in url, specific js file with game can be loaded</p>
-        <hr class="my-4">
-        <p>On load -> button can be loaded to next page<br>Now hardcoded</p>
-        <p class="lead">
-            <a class="btn btn-primary btn-lg" href="/question?id=1" role="button">Go to questions</a>
-        </p>
+    <h1>Bubble Cursor</h1>
+    <div>Once you start you will see several circular targets. One will be highlighted. Select it to complete the task.</div>
+    <div id="sketch-holder"></div>
+    <div>
+        Participant: <input type="number" id="ParticipantField" value="0" /> Mode: Bubble cursor <input type="radio" checked name="studyMode" value="bubble" /> NormalCursor <input type="radio" name="studyMode" value="normal" /> <button onclick="reset()">Reset</button> <button onclick="saveLog()">Save Log</button>
     </div>
 </div>
 
 
 
-
-<script src="/js/bundle.js"></script>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-</body>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+<script src="/js/bundle.js"></script></body>
 
 </html>
