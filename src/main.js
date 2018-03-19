@@ -160,6 +160,7 @@ var loadGame = function (game, version) {
     window.curTarget = 0;
     window.cursorSize = 5;
     window.targetArea = {x:300, y:40, width:860, height:720};
+    window.startButtonArea = {x:10, y:10, width:200, height:100};
     window.running = false;
     window.mode = "bubble";
     window.trial = -1;
@@ -171,6 +172,8 @@ var loadGame = function (game, version) {
     window.game = game;
     window.version = version;
     window.gameSpeed = 0;
+    window.experimentTime = 30000;
+    window.experimentFinished = false;
 
     window.reset = function (repeat) {
         running = false;
@@ -180,6 +183,43 @@ var loadGame = function (game, version) {
         cursorSize = 1;
         if(!repeat)
             trial++;
+    };
+
+    window.resetEpisode = function (repeat) {
+        running = true;
+
+        createTargets();
+
+        cursorSize = 1;
+        if(!repeat)
+            trial++;
+    };
+
+    window.endEpisode = function (repeat) {
+        running = false;
+
+        //handleGameLoading("1", "1");
+        if(window.game == 1){
+            if(window.version == "1"){
+                window.version = "2";
+            }else{
+                window.game = 2;
+                window.version = "1"
+            }
+        }
+        else{
+            if(window.version == "1"){
+                window.version = "2";
+            }else{
+                window.game = 2;
+                window.version = "1";
+                window.gameBackground = '#d1d8e0';
+                window.experimentFinished = true;
+            }
+        }
+        //window.game = 1;
+        //window.version = "1";
+        window.setup();
     };
 
     window.createTargets = function(){
@@ -283,10 +323,11 @@ var loadGame = function (game, version) {
                 row.setNum('Duration', curTime - startTime);
 
                 updateGame();
-                reset();
+                resetEpisode();
             }
         } else{
-            if(collidePointRect(mouseX, mouseY, startArea.x, startArea.y, startArea.width, startArea.height)) {
+            if(collidePointRect(mouseX, mouseY, startButtonArea.x, startButtonArea.y, startButtonArea.width, startButtonArea.height)) {
+                setTimeout(endEpisode, window.experimentTime)
                 running = true;
                 startTime = new Date();
                 startPosition = {x:mouseX, y:mouseY};
@@ -328,7 +369,7 @@ var loadGame = function (game, version) {
             fill('#fed330');
             stroke(75);
             strokeWeight(2);
-            rect(startArea.x, startArea.y, startArea.width, startArea.height);
+            rect(startButtonArea.x, startButtonArea.y, startButtonArea.width, startButtonArea.height);
 
             cursor(HAND);
 
@@ -336,7 +377,11 @@ var loadGame = function (game, version) {
             fill(0);
             textSize(18);
             textAlign(CENTER);
-            text('Click mouse here\nto start trial #' + (trial + 1), startArea.x + 0.5 * startArea.width, startArea.y + 0.5 * startArea.height - 0.5);
+            if(!window.experimentFinished)
+                text('Click mouse here\nto start trial #' + (trial + 1), startButtonArea.x + 0.5 * startButtonArea.width, startButtonArea.y + 0.5 * startButtonArea.height - 0.5);
+            else{
+                text('Experiment finished.', startButtonArea.x + 0.5 * startButtonArea.width, startButtonArea.y + 0.5 * startButtonArea.height - 0.5);
+            }
         } else {
             if(mode == "bubble") {
                 cursorSize = -1;
@@ -412,9 +457,10 @@ var loadGame = function (game, version) {
             this.acceleration.mult(0);
 
             // If current target hits the ground before being clicked...
+            /*
             if (this.isCurrentTarget && this.position.y > (height - this.r - 1)) {
-                reset(true);	// ... the trial is repeated
-            }
+                resetEpisode(true);	// ... the trial is repeated
+            }*/
         }
         else if(window.game == 2){  // Circles left to right
            this.position.x -= window.gameSpeed;
