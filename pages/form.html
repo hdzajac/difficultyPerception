@@ -4,23 +4,66 @@
     <meta charset="UTF-8">
     <title>Form</title>
     <link href="/css/style.css" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
 
 <div class="container">
-    <div class="jumbotron">
-        <h1 class="display-4">Form Page</h1>
-        <p class="lead">Sample welcome</p>
-        <hr class="my-4">
-        <p>Something else</p>
-        <p class="lead">
-            <a class="btn btn-primary btn-lg" href="/game?id=1" role="button">Start game 1</a>
-        </p>
-    </div>
+    <form class="after-game-form">
+
+        <div class="form-group">
+            <label for="Appeal"> How appealing do you find the interface of the game?</label>
+            <div>
+                <span class="value">Rate: </span>
+                <span class="value" id="AppealValue"></span>
+            </div>
+            <div class="slidecontainer">
+                <input type="range" min="1" max="10" value="5" class="slider" id="Appeal">
+            </div>
+            <div class="labels-container">
+                <div>1</div>
+                <div>10</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="Performance">How well do you feel you performed during the game?</label>
+            <div>
+                <span class="value">Rate: </span>
+                <span class="value" id="PerformanceValue"></span>
+            </div>
+            <div class="slidecontainer">
+                <input type="range" min="1" max="10" value="5" class="slider" id="Performance">
+            </div>
+            <div class="labels-container">
+                <div>1</div>
+                <div>10</div>
+            </div>
+        </div>
+
+
+
+        <div class="form-group">
+            <label for="Difficulty">How difficult do you find the game?</label>
+            <div>
+                <span class="value">Rate: </span>
+                <span class="value" id="DifficultyValue"></span>
+            </div>
+            <div class="slidecontainer">
+                <input type="range" min="1" max="10" value="5" class="slider" id="Difficulty">
+            </div>
+            <div class="labels-container">
+                <div>1</div>
+                <div>10</div>
+            </div>
+        </div>
+
+
+        <button type="submit" class="btn btn-primary">Continue</button>
+
+    </form>
 </div>
-
-
 
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
@@ -34,6 +77,7 @@
         crossorigin="anonymous"></script>
 <script src="/js/p5.js"></script>
 <script src="/js/p5.collide2d.js"></script>
-<script src="/js/bundle.js"></script></body>
+<script src="/js/bundle.js"></script>
+</body>
 
 </html>

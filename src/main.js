@@ -1,4 +1,6 @@
 const FILENAME = "results";
+const ID = "id";
+const VERSION = "ver";
 
 var saveAs = require("file-saver").saveAs;
 
@@ -10,13 +12,56 @@ $("#initForm").submit(function(event){
     sessionStorage.setItem("form", JSON.stringify(form));
 
     var link = window.location.origin;
-
-    window.location.href = link + "/game?id=1";
+    console.log(link + "/game?" + ID + "=1&" + VERSION + "=1");
+    window.location.href = link + "/game?" + ID + "=1&" + VERSION + "=1";
 });
 
 
+$(".after-game-form").submit(function(event){
+    event.preventDefault();
+    const data = toJSONString(this);
 
+    var id = getUrlParameter("id");
+    console.log("ID: " + id);
 
+    var ver = getUrlParameter("ver");
+    console.log("Version: " + ver);
+
+    const form = JSON.parse(sessionStorage.getItem("form"));
+    form["id-" + id + "_ver-" + ver] = data;
+
+    sessionStorage.setItem("form", JSON.stringify(form));
+    var link = window.location.origin;
+
+    if(id === "1"){
+        if (ver === "1")
+            ver = "2";
+        else{
+            id = "2";
+            ver = "1";
+        }
+    } else {
+        if (int(ver) === 1)
+            ver = "2";
+        else{
+            downloadForm();
+            window.location.href = link + "/finish";
+        }
+    }
+
+    window.location.href = link + "/game?" + ID + "="+ id + "&" + VERSION + "=" + ver;
+});
+
+// ************************************************************************
+// SLIDER
+// ************************************************************************
+
+// Update the current slider value (each time you drag the slider handle)
+$(".slider").on("input", function(event){
+    const id = event.target.id;
+    const output = document.getElementById(id + 'Value');
+    output.innerHTML = event.target.value; // Display the default slider value
+});
 
 // ************************************************************************
 // GLOBAL FUNCTIONS
