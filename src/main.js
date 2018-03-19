@@ -1,3 +1,22 @@
+const FILENAME = "results";
+
+var saveAs = require("file-saver").saveAs;
+
+$("#initForm").submit(function(event){
+    event.preventDefault();
+    var data = toJSONString(this);
+    var form = {};
+    form.initial = data;
+    sessionStorage.setItem("form", JSON.stringify(form));
+
+    var link = window.location.origin;
+
+    window.location.href = link + "/game?id=1";
+});
+
+
+
+
 
 // ************************************************************************
 // GLOBAL FUNCTIONS
@@ -16,6 +35,30 @@ var getUrlParameter = function getUrlParameter(sParam) {
             return sParameterName[1] === undefined ? true : sParameterName[1];
         }
     }
+};
+
+// parsing the form to json
+
+var toJSONString = function ( form ) {
+        var obj = {};
+        var elements = form.querySelectorAll( "input, select, textarea" );
+        console.log(elements);
+        for( var i = 0; i < elements.length; ++i ) {
+            var element = elements[i];
+            var name = element.id;
+            var value = element.value;
+
+            if( name ) {
+                obj[ name ] = value;
+            }
+        }
+
+        return JSON.stringify( obj );
+    };
+
+var downloadForm = function(){
+    var blob = new Blob([sessionStorage.getItem("form")], {type: "text/json;charset=utf-8"});
+    saveAs(blob, FILENAME + ".txt");
 };
 
 // ************************************************************************

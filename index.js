@@ -35,6 +35,11 @@ app.get('/test',function(req,res){
     //__dirname : It will resolve to your project folder.
 });
 
+app.get('/start',function(req,res){
+    res.sendFile(path.join(__dirname+'/pages/start.html'));
+    //__dirname : It will resolve to your project folder.
+});
+
 app.listen(3000);
 
 console.log("Running at Port 3000");
