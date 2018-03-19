@@ -199,7 +199,7 @@ $("#initForm").submit(function(event){
     event.preventDefault();
     var data = toJSONString(this);
     var form = {};
-    form.initial = data;
+    form.initial = JSON.parse(data);
     sessionStorage.setItem("form", JSON.stringify(form));
 
     var link = window.location.origin;
@@ -210,7 +210,7 @@ $("#initForm").submit(function(event){
 
 $(".after-game-form").submit(function(event){
     event.preventDefault();
-    const data = toJSONString(this);
+    const data = JSON.parse(toJSONString(this));
 
     var id = getUrlParameter("id");
     console.log("ID: " + id);
@@ -232,7 +232,7 @@ $(".after-game-form").submit(function(event){
             ver = "1";
         }
     } else {
-        if (int(ver) === 1)
+        if (ver === 1)
             ver = "2";
         else{
             downloadForm();
@@ -294,7 +294,7 @@ var toJSONString = function ( form ) {
 
 var downloadForm = function(){
     var blob = new Blob([sessionStorage.getItem("form")], {type: "text/json;charset=utf-8"});
-    saveAs(blob, FILENAME + ".txt");
+    saveAs(blob, FILENAME + ".json");
 };
 
 // ************************************************************************
@@ -363,7 +363,7 @@ var loadGame = function (game, version) {
     window.game = game;
     window.version = version;
     window.gameSpeed = 0;
-    window.experimentTime = 3000;
+    window.experimentTime = 30000;
     window.experimentFinished = false;
 
     window.reset = function (repeat) {
@@ -438,7 +438,7 @@ var loadGame = function (game, version) {
 
 
 
-    }
+    };
 
 
 
@@ -518,7 +518,7 @@ var loadGame = function (game, version) {
             }
         } else{
             if(collidePointRect(mouseX, mouseY, startButtonArea.x, startButtonArea.y, startButtonArea.width, startButtonArea.height)) {
-                setTimeout(endEpisode, window.experimentTime)
+                setTimeout(endEpisode, window.experimentTime);
                 running = true;
                 startTime = new Date();
                 startPosition = {x:mouseX, y:mouseY};
