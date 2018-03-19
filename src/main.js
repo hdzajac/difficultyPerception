@@ -33,9 +33,12 @@ var initialise = function () {
     var id = getUrlParameter("id");
     console.log("ID: " + id);
 
+    var ver = getUrlParameter("ver");
+    console.log("Version: " + ver);
+
     switch (path){
         case "game":
-            handleGameLoading(id);
+            handleGameLoading(id, ver);
             break;
         default:
             break;
@@ -49,23 +52,25 @@ var initialise = function () {
 //
 // ************************************************************************
 
-var handleGameLoading = function(id){
+var handleGameLoading = function(id, ver){
     console.log("Loading game for id: ", id, " ...");
 
     switch (id){
         case "1":
-            loadGame1();
+            loadGame(1, ver);
+            break;
+        case "2":
+            loadGame(2, ver);
             break;
         default:
             break;
     }
 };
 
-var loadGame1 = function () {
+var loadGame = function (game, version) {
     window.targets = [];
     window.curTarget = 0;
     window.cursorSize = 5;
-    window.startArea = {x:10, y:10, width:1100, height:300};
     window.targetArea = {x:300, y:40, width:860, height:720};
     window.running = false;
     window.mode = "bubble";
@@ -75,22 +80,29 @@ var loadGame1 = function () {
     window.startPosition;
     window.studyLog;
     window.gravity_scale = 0.1;
+    window.game = game;
+    window.version = version;
+    window.gameSpeed = 0;
 
     window.reset = function (repeat) {
         running = false;
+
+        createTargets();
+
+        cursorSize = 1;
+        if(!repeat)
+            trial++;
+    };
+
+    window.createTargets = function(){
         hit = [];
         targets = [];
-        while(targets.length < 20) {
-            var add = true;
-            /*t = {x:targetArea.x + random(targetArea.width), y:targetArea.y + random(targetArea.height), r:random(10, 40)}
 
-            for(var i = 0; i < targets.length; ++i) {
-                if(collideCircleCircle(t.x, t.y, t.r * 2.1, targets[i].x, targets[i].y, targets[i].r * 2.1)) {
-                    add = false;
-                    break;
-                }
-            }*/
-            t = new Target(random(0.5, 3), startArea.x + random(startArea.width), startArea.y + random(startArea.height), random(10, 40));
+
+        while(targets.length < window.numberOfCircles) {
+            var add = true;
+            t = new Target(random(0.5, 3), startArea.x + random(startArea.width), startArea.y + random(startArea.height), random(10, 40), false);
+
             for (var i = 0; i < targets.length; i++) {
                 if(collideCircleCircle(t.position.x, t.position.y, t.r * 2.1, targets[i].position.x, targets[i].position.y, targets[i].r * 2.1)) {
                     add = false;
@@ -102,11 +114,12 @@ var loadGame1 = function () {
             }
         }
         curTarget = int(random(targets.length));
-        cursorSize = 1;
-        if(!repeat)
-            trial++;
-    };
+        targets[curTarget].isCurrentTarget = true;
 
+
+
+
+    }
 
 
 
@@ -121,6 +134,33 @@ var loadGame1 = function () {
         studyLog.addColumn('TargetSize');
         studyLog.addColumn('TargetDistance');
         studyLog.addColumn('Duration');
+
+
+
+        // Implement here the specific setup logic for each game
+        if(window.game == 1) {
+            window.startArea = {x: 10, y: 10, width: 1100, height: 300};// This is the area in which circles are generated
+            window.numberOfCircles = 20;
+        }
+        else if(window.game == 2) {
+            window.startArea = {x: 600, y: 10, width: 250, height: 700};
+            window.numberOfCircles = 50;
+            window.gameSpeed = 1;
+        }
+        else{}
+
+
+        if(window.version == "1"){
+            window.bubbleColor = '#000000';
+            window.targetColor = '#00ff04';
+            window.gameBackground = '#2a00ff';
+        }
+        else{
+            window.bubbleColor = '#4b7bec';
+            window.targetColor = '#fd9644';
+            window.gameBackground = '#d1d8e0';
+        }
+
         reset();
     };
 
@@ -128,14 +168,18 @@ var loadGame1 = function () {
         if(running) {
             hit = []
             for(var i = 0; i < targets.length; ++i) {
-                /*if(collideCircleCircle(mouseX, mouseY, cursorSize * 2, targets[i].position.x, targets[i].position.y, targets[i].r * 2)) {
-                    hit.push(i);
-                }*/
                 r = targets[i].r;
                 x = targets[i].position.x;
                 y = targets[i].position.y;
-                if(mouseX > x - r && mouseX < x + r && mouseY > y - r && mouseY < y + r){
-                    hit.push(i);
+                if(window.version == "1"){
+                    if(mouseX > x - r && mouseX < x + r && mouseY > y - r && mouseY < y + r){
+                        hit.push(i);
+                    }
+                }
+                else if(window.version == "2"){
+                    if(mouseX > x - 0.85*r && mouseX < x + 0.85*r  && mouseY > y - 0.85*r && mouseY < y + 0.85*r){
+                        hit.push(i);
+                    }
                 }
             }
             if(hit.indexOf(curTarget) != -1) {
@@ -150,7 +194,7 @@ var loadGame1 = function () {
                 row.setNum('TargetDistance', dist(startPosition.x, startPosition.y, targets[curTarget].x, targets[curTarget].y));
                 row.setNum('Duration', curTime - startTime);
 
-                gravity_scale += 0.1;
+                updateGame();
                 reset();
             }
         } else{
@@ -168,8 +212,29 @@ var loadGame1 = function () {
         }
     };
 
+    // Here is the logic for modifying the game whenever a new trial starts (just in case we want to make the game
+    // to be more difficult incrementally)
+    window.updateGame = function(){
+
+        if(window.game == 1){
+            if(window.version == "1")
+                window.gravity_scale += 0.1;
+            else
+                window.gravity_scale += 0.15;
+        }
+        else if(window.game == 2){
+            if(window.version == "1")
+                window.gameSpeed += 0.2;
+            else
+                window.gameSpeed += 0.3;
+        }
+        else{
+
+        }
+    }
+
     window.draw = function () {
-        background('#d1d8e0');
+        background(window.gameBackground);
 
         if(!running) {
             fill('#fed330');
@@ -206,49 +271,15 @@ var loadGame1 = function () {
                     }
                 }
             }
-            /*
-            for(var i = 0; i < targets.length; ++i) {
-                if(i == curTarget) {
-                    fill('#fd9644');
-                } else {
-                    fill('#4b7bec');
-                }
 
-                if(hit.indexOf(i) != -1) {
-                    stroke('#eb3b5a');
-                    strokeWeight(4);
-                } else {
-                    noStroke();
-                }
-
-                ellipse(targets[i].x, targets[i].y, targets[i].r * 2);
-            }*/
-
+            // Update and display
             for (var i = 0; i < targets.length; i++) {
-
-                // Is the Target in the liquid?
-                //if (liquid.contains(Targets[i])) {
-                // Calculate drag force
-                //var dragForce = liquid.calculateDrag(Targets[i]);
-                // Apply drag force to Target
-                //Targets[i].applyForce(dragForce);
-                //}
-
-                // Gravity is scaled by mass here!
-                var gravity = createVector(0, gravity_scale*targets[i].mass);
-                // Apply gravity
-                targets[i].applyForce(gravity);
-
-                // Update and display
                 targets[i].update();
                 targets[i].display(i);
                 targets[i].checkEdges();
             }
 
-            // If current target hits the ground before being clicked...
-            if (targets[curTarget].position.y > (height - targets[curTarget].r - 1)) {
-                reset(true);	// ... the trial is repeated
-            }
+
 
 
             if(mode == "bubble") {
@@ -261,12 +292,13 @@ var loadGame1 = function () {
     };
 
 
-    window.Target = function (m,x,y,r) {
+    window.Target = function (m,x,y,r,t) {
         this.mass = m;
         this.r = r;
         this.position = createVector(x,y);
         this.velocity = createVector(0,0);
         this.acceleration = createVector(0,0);
+        this.isCurrentTarget = t;
     };
 
     // Newton's 2nd law: F = M * A
@@ -276,25 +308,52 @@ var loadGame1 = function () {
         this.acceleration.add(f);
     };
 
+    // Here is the logic of the circles in each game and version
     Target.prototype.update = function() {
-        // Velocity changes according to acceleration
-        this.velocity.add(this.acceleration);
-        // position changes by velocity
-        this.position.add(this.velocity);
-        // We must clear acceleration each frame
-        this.acceleration.mult(0);
+
+        if(window.game == 1){      // Circles fall to ground
+            // Gravity is scaled by mass here
+            var gravity = createVector(0, gravity_scale*this.mass);
+            // Apply gravity
+            this.applyForce(gravity);
+            // Velocity changes according to acceleration
+            this.velocity.add(this.acceleration);
+            // position changes by velocity
+            this.position.add(this.velocity);
+            // We must clear acceleration each frame
+            this.acceleration.mult(0);
+
+            // If current target hits the ground before being clicked...
+            if (this.isCurrentTarget && this.position.y > (height - this.r - 1)) {
+                reset(true);	// ... the trial is repeated
+            }
+        }
+        else if(window.game == 2){  // Circles left to right
+           this.position.x -= window.gameSpeed;
+            if(this.position.x < 0)
+                this.position.x = width;
+
+            if(window.version == "2"){  //  Difficult version
+                if(Math.abs(mouseX - this.position.x) < 50 && Math.abs(mouseY - this.position.y) < 50 && this.isCurrentTarget)
+                    this.position.y += random(-1,1);
+            }
+
+        }
+        else{
+
+        }
+
+
+
+
     };
 
     Target.prototype.display = function(i) {
-        /*stroke(0);
-        strokeWeight(2);
-        fill(255,127);
-        ellipse(this.position.x,this.position.y,this.mass*16,this.mass*16);
-          */
+
         if(i == curTarget) {
-            fill('#fd9644');
+            fill(window.targetColor);
         } else {
-            fill('#4b7bec');
+            fill(window.bubbleColor);
         }
 
         if(hit.indexOf(i) != -1) {
