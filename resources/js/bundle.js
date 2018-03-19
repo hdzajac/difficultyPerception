@@ -306,6 +306,7 @@ var loadGame = function (game, version) {
     window.curTarget = 0;
     window.cursorSize = 5;
     window.targetArea = {x:300, y:40, width:860, height:720};
+    window.startButtonArea = {x:10, y:10, width:200, height:100};
     window.running = false;
     window.mode = "bubble";
     window.trial = -1;
@@ -317,9 +318,20 @@ var loadGame = function (game, version) {
     window.game = game;
     window.version = version;
     window.gameSpeed = 0;
+    window.experimentTime = 30000;
 
     window.reset = function (repeat) {
         running = false;
+
+        createTargets();
+
+        cursorSize = 1;
+        if(!repeat)
+            trial++;
+    };
+
+    window.resetEpisode = function (repeat) {
+        running = true;
 
         createTargets();
 
@@ -385,14 +397,14 @@ var loadGame = function (game, version) {
 
 
         if(window.version == "1"){
-            window.bubbleColor = '#4b7bec';
-            window.targetColor = '#fd9644';
-            window.gameBackground = '#d1d8e0';
-        }
-        else{
             window.bubbleColor = '#000000';
             window.targetColor = '#00ff04';
             window.gameBackground = '#2a00ff';
+        }
+        else{
+            window.bubbleColor = '#4b7bec';
+            window.targetColor = '#fd9644';
+            window.gameBackground = '#d1d8e0';
         }
 
         reset();
@@ -429,10 +441,11 @@ var loadGame = function (game, version) {
                 row.setNum('Duration', curTime - startTime);
 
                 updateGame();
-                reset();
+                resetEpisode();
             }
         } else{
-            if(collidePointRect(mouseX, mouseY, startArea.x, startArea.y, startArea.width, startArea.height)) {
+            if(collidePointRect(mouseX, mouseY, startButtonArea.x, startButtonArea.y, startButtonArea.width, startButtonArea.height)) {
+                setTimeout(reset, window.experimentTime)
                 running = true;
                 startTime = new Date();
                 startPosition = {x:mouseX, y:mouseY};
@@ -474,7 +487,7 @@ var loadGame = function (game, version) {
             fill('#fed330');
             stroke(75);
             strokeWeight(2);
-            rect(startArea.x, startArea.y, startArea.width, startArea.height);
+            rect(startButtonArea.x, startButtonArea.y, startButtonArea.width, startButtonArea.height);
 
             cursor(HAND);
 
@@ -482,7 +495,7 @@ var loadGame = function (game, version) {
             fill(0);
             textSize(18);
             textAlign(CENTER);
-            text('Click mouse here\nto start trial #' + (trial + 1), startArea.x + 0.5 * startArea.width, startArea.y + 0.5 * startArea.height - 0.5);
+            text('Click mouse here\nto start trial #' + (trial + 1), startButtonArea.x + 0.5 * startButtonArea.width, startButtonArea.y + 0.5 * startButtonArea.height - 0.5);
         } else {
             if(mode == "bubble") {
                 cursorSize = -1;
@@ -559,7 +572,7 @@ var loadGame = function (game, version) {
 
             // If current target hits the ground before being clicked...
             if (this.isCurrentTarget && this.position.y > (height - this.r - 1)) {
-                reset(true);	// ... the trial is repeated
+                resetEpisode(true);	// ... the trial is repeated
             }
         }
         else if(window.game == 2){  // Circles left to right
