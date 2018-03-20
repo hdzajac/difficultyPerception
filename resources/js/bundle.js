@@ -569,7 +569,7 @@ var loadGame = function (game, version) {
             textSize(18);
             textAlign(CENTER);
             if(!window.experimentFinished)
-                text('Click mouse here\nto start trial #' + (trial + 1), startButtonArea.x + 0.5 * startButtonArea.width, startButtonArea.y + 0.5 * startButtonArea.height - 0.5);
+                text('Click mouse here\nto start next episode', startButtonArea.x + 0.5 * startButtonArea.width, startButtonArea.y + 0.5 * startButtonArea.height - 0.5);
             else{
                 text('Experiment finished.', startButtonArea.x + 0.5 * startButtonArea.width, startButtonArea.y + 0.5 * startButtonArea.height - 0.5);
             }
