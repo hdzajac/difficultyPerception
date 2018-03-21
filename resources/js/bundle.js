@@ -197,7 +197,8 @@ const EXPERIMENT_TIME = 30000;
 
 var saveAs = require("file-saver").saveAs;
 
-
+var title_text= "The great game"
+var instruction_text= "The round will last for 30s. Try to click in the marked circle as many times as possible."
 // ************************************************************************
 // SLIDER
 // ************************************************************************
@@ -487,19 +488,138 @@ var loadGame = function (game, version) {
             window.gameSpeed = 1;
         }
         else{}
+        if(window.game == 1 && window.version == "1" ) { // 1 ugly
+    
+            var title= document.getElementById("game_title")
+            title.className = "h5"
+            title.style.color="red"
+            title.style.fontWeight = "900"
+            title.innerHTML= title_text+"\n"+instruction_text
 
+            var instructions =document.getElementById("instructions")
+            instructions.innerHTML= ""
 
-        if(window.version == "1"){
+            var rw = document.getElementsByClassName("row")
+            rw[0].style.background='#333300'
+
+            var gamecontainer =document.getElementById("game-container")
+            gamecontainer.style.background="transparent"
+
+            var timer_container = document.getElementsByClassName("timer-container")
+            timer_container[0].style.background='transparent'
+            timer_container[0].style.color = 'black'
+            timer_container[0].style.border = "transparent";
+
+            document.getElementById("timer").style.fontWeight = "900"
+            document.getElementById("defaultCanvas0").style.border="thick solid black"
+
             window.bubbleColor = '#000000';
             window.targetColor = '#00ff04';
             window.gameBackground = '#2a00ff';
         }
-        else if(window.version == "2"){
+        else if(window.game == 1 && window.version == "2" ) {//1 pretty
+
+            var title= document.getElementById("game_title")
+            title.className = "display-4"
+            title.innerHTML=title_text
+
+            var rw = document.getElementsByClassName("row")
+            rw[0].style.background='transparent'
+
+            var instructions =document.getElementById("instructions")
+            instructions.className="lead"
+            instructions.innerHTML= instruction_text
+            instructions.style.fontSize="x-large"
+
+            var gamecontainer =document.getElementById("game-container")
+            gamecontainer.style.background="transparent"
+
+            var timer_container = document.getElementsByClassName("timer-container")
+            timer_container[0].style.background="#fdfed8"
+            timer_container[0].style.color = '#2e2e2b'
+            timer_container[0].style.fo
+            timer_container[0].style.border = "thin dotted #2e2e2b";
+            timer_container[0].style.borderRadius ="50%"
+
+            document.getElementById("timer").style.fontWeight = "300"
+            document.getElementById("timer").style.fontSize = "3.5rem"
+            document.getElementById("timer").style.lineHeight = "1.2"
+
+            document.getElementById("defaultCanvas0").style.border="transparent"
+
             window.bubbleColor = '#4b7bec';
-            window.targetColor = '#fd9644';
+            window.targetColor = '#fdfed8';
             window.gameBackground = '#d1d8e0';
         }
+        else if(window.game == 2 && window.version == "1") { //2 ugly
 
+            var title= document.getElementById("game_title")
+            title.className = "h5"
+            title.style.color="#55ff00"
+            title.style.background="#e6b800"
+            title.innerHTML= title_text+"\n"+instruction_text
+
+            var gamecontainer =document.getElementById("game-container")
+            gamecontainer.style.background="black"
+
+            var instructions =document.getElementById("instructions")
+            instructions.innerHTML= ""
+            
+            var rw = document.getElementsByClassName("row")
+            rw[0].style.background='#80ff00'
+
+            var timer_container = document.getElementsByClassName("timer-container")
+            timer_container[0].style.background='transparent'
+            timer_container[0].style.color = 'black'
+            timer_container[0].style.border = "transparent";
+
+            document.getElementById("timer").style.fontWeight = "900"
+
+            document.getElementById("defaultCanvas0").style.border="thick dotted black"
+
+            window.bubbleColor = '#00cc00';
+            window.targetColor = '#e6b800';
+            window.gameBackground = '#666633';
+        }
+        else if(window.game == 2 && window.version == "2"){//2 pretty
+            var title= document.getElementById("game_title")
+            title.className = "display-4"
+            title.innerHTML=title_text
+            title.style.fontStyle = "italic";
+            title.style.fontWeight = "500";
+
+            var instructions =document.getElementById("instructions")
+            instructions.className="lead"
+            instructions.innerHTML= instruction_text
+            instructions.style.fontSize="x-large"
+            instructions.style.fontWeight = "400";
+
+            var gamecontainer =document.getElementById("game-container")
+            gamecontainer.style.background="transparent"
+
+            var rw = document.getElementsByClassName("row")
+            rw[0].style.background='transparent'
+
+            var timer_container = document.getElementsByClassName("timer-container")
+            timer_container[0].style.background="#99ffcc"
+            timer_container[0].style.color = 'black'
+            timer_container[0].style.fo
+            timer_container[0].style.border = "transparent";
+            timer_container[0].style.borderRadius ="20%"
+            timer_container[0].style.height="100px"
+            timer_container[0].style.width="100px"
+
+            document.getElementById("timer").style.fontWeight = "300"
+            document.getElementById("timer").style.fontSize = "3.5rem"
+            document.getElementById("timer").style.lineHeight = "1.2"
+
+            document.getElementById("defaultCanvas0").style.border="transparent"
+            document.getElementById("defaultCanvas0").style.border="thin solid grey"
+
+            window.bubbleColor = 'black';
+            window.targetColor = 'red';
+            window.gameBackground = '#99ffcc';
+        }
         reset();
     };
 
@@ -580,7 +700,14 @@ var loadGame = function (game, version) {
             cursor(HAND);
 
             noStroke();
-            fill('#fdfed8');
+            if(window.game == 1 && window.version == "2")
+                fill('#fdfed8');
+            else if(window.game == 1 && window.version == "1")
+                fill('white');
+            else if(window.game == 2 && window.version == "2")
+                fill(window.gameBackground);
+            else if(window.game == 2 && window.version == "1")
+                fill(window.gameBackground);
             textSize(18);
             textAlign(CENTER);
             if(!window.experimentFinished) {
@@ -588,7 +715,7 @@ var loadGame = function (game, version) {
                 fill(0);
                 stroke(75);
                 strokeWeight(1);
-
+                
                 text('Click here\nto start next episode', startButtonArea.x + 0.5 * startButtonArea.width, startButtonArea.y + 0.5 * startButtonArea.height - 0.5);
             }
         } else {
