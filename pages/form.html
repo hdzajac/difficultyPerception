@@ -10,59 +10,61 @@
 <body>
 
 <div class="container">
-    <form class="after-game-form">
+    <div class="jumbotron">
+        <form class="after-game-form">
 
-        <div class="form-group">
-            <label for="Appeal"> How appealing do you find the interface of the game?</label>
-            <div>
-                <span class="value">Rate: </span>
-                <span class="value" id="AppealValue"></span>
+            <div class="form-group">
+                <label for="Appeal"> How appealing do you find the interface of the game?</label>
+                <div>
+                    <span class="value">Rate: </span>
+                    <span class="value" id="AppealValue"></span>
+                </div>
+                <div class="slidecontainer">
+                    <input type="range" min="1" max="10" value="5" class="slider" id="Appeal">
+                </div>
+                <div class="labels-container">
+                    <div>1</div>
+                    <div>10</div>
+                </div>
             </div>
-            <div class="slidecontainer">
-                <input type="range" min="1" max="10" value="5" class="slider" id="Appeal">
-            </div>
-            <div class="labels-container">
-                <div>1</div>
-                <div>10</div>
-            </div>
-        </div>
 
-        <div class="form-group">
-            <label for="Performance">How well do you feel you performed during the game?</label>
-            <div>
-                <span class="value">Rate: </span>
-                <span class="value" id="PerformanceValue"></span>
+            <div class="form-group">
+                <label for="Performance">How well do you feel you performed during the game?</label>
+                <div>
+                    <span class="value">Rate: </span>
+                    <span class="value" id="PerformanceValue"></span>
+                </div>
+                <div class="slidecontainer">
+                    <input type="range" min="1" max="10" value="5" class="slider" id="Performance">
+                </div>
+                <div class="labels-container">
+                    <div>1</div>
+                    <div>10</div>
+                </div>
             </div>
-            <div class="slidecontainer">
-                <input type="range" min="1" max="10" value="5" class="slider" id="Performance">
-            </div>
-            <div class="labels-container">
-                <div>1</div>
-                <div>10</div>
-            </div>
-        </div>
-
-
-
-        <div class="form-group">
-            <label for="Difficulty">How difficult do you find the game?</label>
-            <div>
-                <span class="value">Rate: </span>
-                <span class="value" id="DifficultyValue"></span>
-            </div>
-            <div class="slidecontainer">
-                <input type="range" min="1" max="10" value="5" class="slider" id="Difficulty">
-            </div>
-            <div class="labels-container">
-                <div>1</div>
-                <div>10</div>
-            </div>
-        </div>
 
 
-        <button type="submit" class="btn btn-primary">Continue</button>
+            <div class="form-group">
+                <label for="Difficulty">How difficult do you find the game?</label>
+                <div>
+                    <span class="value">Rate: </span>
+                    <span class="value" id="DifficultyValue"></span>
+                </div>
+                <div class="slidecontainer">
+                    <input type="range" min="1" max="10" value="5" class="slider" id="Difficulty">
+                </div>
+                <div class="labels-container">
+                    <div>1</div>
+                    <div>10</div>
+                </div>
+            </div>
 
-    </form>
+
+            <button type="submit" class="btn btn-primary">Continue</button>
+
+        </form>
+
+    </div>
 </div>
 
 

@@ -192,56 +192,11 @@ if (typeof module !== "undefined" && module.exports) {
 const FILENAME = "results";
 const ID = "id";
 const VERSION = "ver";
+const EXPERIMENT_TIME = 30000;
+
 
 var saveAs = require("file-saver").saveAs;
 
-$("#initForm").submit(function(event){
-    event.preventDefault();
-    var data = toJSONString(this);
-    var form = {};
-    form.initial = JSON.parse(data);
-    sessionStorage.setItem("form", JSON.stringify(form));
-
-    var link = window.location.origin;
-    console.log(link + "/game?" + ID + "=1&" + VERSION + "=1");
-    window.location.href = link + "/game?" + ID + "=1&" + VERSION + "=1";
-});
-
-
-$(".after-game-form").submit(function(event){
-    event.preventDefault();
-    const data = JSON.parse(toJSONString(this));
-
-    var id = getUrlParameter("id");
-    console.log("ID: " + id);
-
-    var ver = getUrlParameter("ver");
-    console.log("Version: " + ver);
-
-    const form = JSON.parse(sessionStorage.getItem("form"));
-    form["id-" + id + "_ver-" + ver] = data;
-
-    sessionStorage.setItem("form", JSON.stringify(form));
-    var link = window.location.origin;
-
-    if(id === "1"){
-        if (ver === "1")
-            ver = "2";
-        else{
-            id = "2";
-            ver = "1";
-        }
-    } else {
-        if (ver === 1)
-            ver = "2";
-        else{
-            downloadForm();
-            window.location.href = link + "/finish";
-        }
-    }
-
-    window.location.href = link + "/game?" + ID + "="+ id + "&" + VERSION + "=" + ver;
-});
 
 // ************************************************************************
 // SLIDER
@@ -293,9 +248,100 @@ var toJSONString = function ( form ) {
     };
 
 var downloadForm = function(){
-    var blob = new Blob([sessionStorage.getItem("form")], {type: "text/json;charset=utf-8"});
+    var blob = new Blob([localStorage.getItem("form")], {type: "text/json;charset=utf-8"});
     saveAs(blob, FILENAME + ".json");
 };
+
+
+var startGame = function(){
+    console.log('Game started');
+    setTimeout(handleGameEnd, EXPERIMENT_TIME);
+    startTimer(EXPERIMENT_TIME);
+};
+
+var handleGameEnd = function(){
+    endEpisode();
+    $("#game-container").hide();
+    $("#after-game-container").show();
+};
+
+var startTimer = function(time){
+    $("#timer").text(time/1000);
+    if(time > 0)
+        setTimeout(function () {
+            startTimer(time-1000);
+        }, 1000);
+};
+
+// ************************************************************************
+//
+// Event listeners
+//
+// ************************************************************************
+
+
+$("#initForm").submit(function(event){
+    event.preventDefault();
+    var data = toJSONString(this);
+    var form = {};
+    form.initial = JSON.parse(data);
+    localStorage.setItem("form", JSON.stringify(form));
+
+    var link = window.location.origin;
+    console.log(link + "/game?" + ID + "=1&" + VERSION + "=1");
+    window.location.href = link + "/game?" + ID + "=1&" + VERSION + "=1";
+});
+
+
+$(".after-game-form").submit(function(event){
+    event.preventDefault();
+    const data = JSON.parse(toJSONString(this));
+
+    var id = getUrlParameter("id");
+    console.log("ID: " + id);
+
+    var ver = getUrlParameter("ver");
+    console.log("Version: " + ver);
+
+    const form = JSON.parse(localStorage.getItem("form"));
+    form["id-" + id + "_ver-" + ver] = data;
+
+    localStorage.setItem("form", JSON.stringify(form));
+    var link = window.location.origin;
+
+    if(id === "1"){
+        if (ver === "1")
+            ver = "2";
+        else{
+            id = "2";
+            ver = "1";
+        }
+    } else {
+        if (ver === "1")
+            ver = "2";
+        else{
+            downloadForm();
+            window.location.href = link + "/finish";
+            return;
+        }
+    }
+
+    window.location.href = link + "/game?" + ID + "="+ id + "&" + VERSION + "=" + ver;
+});
+
+
+$("#go-to-form").on("click", function(){
+
+    var game = getUrlParameter("id");
+    var ver = getUrlParameter("ver");
+
+    var link = window.location.origin;
+    console.log(link + "/form?" + ID + "=" + game + "&" + VERSION + "=" + ver);
+    window.location.href = link + "/form?" + ID + "=" + game + "&" + VERSION + "=" + ver;
+});
+
+
+
 
 // ************************************************************************
 //
@@ -363,7 +409,6 @@ var loadGame = function (game, version) {
     window.game = game;
     window.version = version;
     window.gameSpeed = 0;
-    window.experimentTime = 30000;
     window.experimentFinished = false;
 
     window.reset = function (repeat) {
@@ -386,30 +431,11 @@ var loadGame = function (game, version) {
             trial++;
     };
 
-    window.endEpisode = function (repeat) {
+    window.endEpisode = function () {
         running = false;
 
-        //handleGameLoading("1", "1");
-        if(window.game == 1){
-            if(window.version == "1"){
-                window.version = "2";
-            }else{
-                window.game = 2;
-                window.version = "1"
-            }
-        }
-        else{
-            if(window.version == "1"){
-                window.version = "2";
-            }else{
-                window.game = 2;
-                window.version = "3";
-                window.gameBackground = '#000000';
-                window.experimentFinished = true;
-            }
-        }
-        //window.game = 1;
-        //window.version = "1";
+        window.experimentFinished = true;
+
         window.setup();
     };
 
@@ -434,10 +460,6 @@ var loadGame = function (game, version) {
         }
         curTarget = int(random(targets.length));
         targets[curTarget].isCurrentTarget = true;
-
-
-
-
     };
 
 
@@ -453,8 +475,6 @@ var loadGame = function (game, version) {
         studyLog.addColumn('TargetSize');
         studyLog.addColumn('TargetDistance');
         studyLog.addColumn('Duration');
-
-
 
         // Implement here the specific setup logic for each game
         if(window.game == 1) {
@@ -516,9 +536,10 @@ var loadGame = function (game, version) {
                 updateGame();
                 resetEpisode();
             }
-        } else{
+        }
+        else{
             if(collidePointRect(mouseX, mouseY, startButtonArea.x, startButtonArea.y, startButtonArea.width, startButtonArea.height)) {
-                setTimeout(endEpisode, window.experimentTime);
+                startGame();
                 running = true;
                 startTime = new Date();
                 startPosition = {x:mouseX, y:mouseY};
@@ -549,7 +570,7 @@ var loadGame = function (game, version) {
         else{
 
         }
-    }
+    };
 
     window.draw = function () {
         background(window.gameBackground);
@@ -559,19 +580,16 @@ var loadGame = function (game, version) {
             cursor(HAND);
 
             noStroke();
-            fill('#fed330');
+            fill('#fdfed8');
             textSize(18);
             textAlign(CENTER);
             if(!window.experimentFinished) {
                 rect(startButtonArea.x, startButtonArea.y, startButtonArea.width, startButtonArea.height);
                 fill(0);
                 stroke(75);
-                strokeWeight(2);
+                strokeWeight(1);
 
                 text('Click here\nto start next episode', startButtonArea.x + 0.5 * startButtonArea.width, startButtonArea.y + 0.5 * startButtonArea.height - 0.5);
-            }
-            else{
-                //text('Experiment finished.', startButtonArea.x + 0.5 * startButtonArea.width, startButtonArea.y + 0.5 * startButtonArea.height - 0.5);
             }
         } else {
             // Update and display

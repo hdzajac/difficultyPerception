@@ -4,22 +4,37 @@
     <meta charset="UTF-8">
     <title>Form</title>
     <link href="/css/style.css" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="/js/p5.js"></script>
     <script src="/js/p5.collide2d.js"></script>
 </head>
 <body>
 
-
-<div class="container">
-    <h1>Bubble Cursor</h1>
-    <div>Once you start you will see several circular targets. One will be highlighted. Select it to complete the task.</div>
-    <div id="sketch-holder"></div>
-    <div>
-        <button onclick="reset()">Reset</button> <button onclick="endEpisode()">Next episode</button>
+<div class="container" id="game-container">
+    <h1>The great game</h1>
+    <div class="timer-container">
+        <span class="timer" id="timer"></span>
     </div>
+
+    <div class="row">
+        <div class="col-10">
+            <p>The round will last for 30s. Try to click in the marked circle as many times as possible.</p>
+        </div>
+    </div>
+    <div id="sketch-holder"></div>
 </div>
 
+<div class="container" id="after-game-container">
+    <div class="jumbotron">
+        <h1 class="display-4">Time's up</h1>
+        <p class="lead">The round is over, please proceed to the next page.</p>
+        <hr class="my-4">
+        <p class="lead">
+            <button class="btn btn-primary" id="go-to-form">Continue</button>
+        </p>
+    </div>
+</div>
 
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
@@ -31,6 +46,7 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
-<script src="/js/bundle.js"></script></body>
+<script src="/js/bundle.js"></script>
+</body>
 
 </html>

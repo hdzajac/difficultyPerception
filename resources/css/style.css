@@ -8,6 +8,7 @@ html, body {
 
 .container {
     position: absolute;
+    padding-top: 50px;
     top: 50%;
     left: 50%;
     margin-right: -50%;
@@ -22,7 +23,24 @@ div input {
     margin-right: 20px;
 }
 
+.timer-container{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fafafa;
+    top: 75px;
+    right: 0;
+    height: 150px;
+    width: 150px;
+    border-radius: 50%;
+    background-color: #2d302e;
+}
 
+.timer{
+    font-size: 48px;
+    font-weight: 300;
+}
 
 
 .slider {
@@ -63,4 +81,9 @@ div input {
 .labels-container {
     display: flex;
     justify-content: space-between;
+}
+
+
+#after-game-container{
+    display: none;
 }
