@@ -37,6 +37,14 @@ div input {
     background-color: #2d302e;
 }
 
+.labels-container{
+    margin: 0;
+}
+
+.slidecontainer{
+    margin: 0;
+}
+
 .timer{
     font-size: 48px;
     font-weight: 300;
@@ -76,6 +84,10 @@ div input {
     width: 100%; /* Width of the outside container */
 }
 
+
+.rate{
+    font-size: larger;
+}
 
 
 .labels-container {
