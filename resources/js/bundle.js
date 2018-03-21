@@ -362,6 +362,8 @@ var initialise = function () {
     var ver = getUrlParameter("ver");
     console.log("Version: " + ver);
 
+
+
     switch (path){
         case "game":
             handleGameLoading(id, ver);
@@ -380,6 +382,9 @@ var initialise = function () {
 
 var handleGameLoading = function(id, ver){
     console.log("Loading game for id: ", id, " ...");
+
+    if (ver === "1")
+        $("body").css("background", "linear-gradient(to right, red,orange,yellow,green,blue,indigo,violet)");
 
     switch (id){
         case "1":
@@ -616,8 +621,8 @@ var loadGame = function (game, version) {
             document.getElementById("defaultCanvas0").style.border="transparent"
             document.getElementById("defaultCanvas0").style.border="thin solid grey"
 
-            window.bubbleColor = 'black';
-            window.targetColor = 'red';
+            window.bubbleColor = '#3b3b3b';
+            window.targetColor = '#ff9596';
             window.gameBackground = '#99ffcc';
         }
         reset();
@@ -679,16 +684,13 @@ var loadGame = function (game, version) {
             if(window.version == "1")
                 window.gravity_scale += 0.1;
             else
-                window.gravity_scale += 0.15;
+                window.gravity_scale += 0.15;   // easier for ugly ui
         }
         else if(window.game == 2){
             if(window.version == "1")
                 window.gameSpeed += 0.2;
             else
-                window.gameSpeed += 0.3;
-        }
-        else{
-
+                window.gameSpeed += 0.27;  //the pretty interface is noticeably harder
         }
     };
 
@@ -760,6 +762,20 @@ var loadGame = function (game, version) {
             // We must clear acceleration each frame
             this.acceleration.mult(0);
 
+            if(window.version == "2" && this.isCurrentTarget){  //  Difficult version
+                if (Math.abs(mouseX - this.position.x) < 50){
+                    if (mouseX > this.position.x)
+                        this.position.x -= 0.1;
+                    else
+                        this.position.x += 0.1;
+                }
+                if (Math.abs(mouseY - this.position.y) < 50 ){
+                    if (mouseY > this.position.y)
+                        this.position.y -= 0.1;
+                    else
+                        this.position.y += 0.1;
+                }
+            }
             // If current target hits the ground before being clicked...
             /*
             if (this.isCurrentTarget && this.position.y > (height - this.r - 1)) {
@@ -771,19 +787,22 @@ var loadGame = function (game, version) {
             if(this.position.x < 0)
                 this.position.x = width;
 
-            if(window.version == "2"){  //  Difficult version
-                if(Math.abs(mouseX - this.position.x) < 50 && Math.abs(mouseY - this.position.y) < 50 && this.isCurrentTarget)
-                    this.position.y += random(-1,1);
+            if(window.version == "2" && this.isCurrentTarget){  //  Difficult version
+                if (Math.abs(mouseX - this.position.x) < 50){
+                    if (mouseX > this.position.x)
+                        this.position.x -= 0.1;
+                    else
+                        this.position.x += 0.1;
+                }
+                if (Math.abs(mouseY - this.position.y) < 50 ){
+                    if (mouseY > this.position.y)
+                        this.position.y -= 0.1;
+                    else
+                        this.position.y += 0.1;
+                }
             }
 
         }
-        else{
-
-        }
-
-
-
-
     };
 
     Target.prototype.display = function(i) {
