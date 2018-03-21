@@ -353,7 +353,7 @@ var loadGame = function (game, version) {
     window.targetArea = {x:300, y:40, width:860, height:720};
     window.startButtonArea = {x:10, y:10, width:200, height:100};
     window.running = false;
-    window.mode = "bubble";
+    window.mode = "normal";
     window.trial = -1;
     window.hit = [];
     window.startTime;
@@ -403,8 +403,8 @@ var loadGame = function (game, version) {
                 window.version = "2";
             }else{
                 window.game = 2;
-                window.version = "1";
-                window.gameBackground = '#d1d8e0';
+                window.version = "3";
+                window.gameBackground = '#000000';
                 window.experimentFinished = true;
             }
         }
@@ -474,7 +474,7 @@ var loadGame = function (game, version) {
             window.targetColor = '#00ff04';
             window.gameBackground = '#2a00ff';
         }
-        else{
+        else if(window.version == "2"){
             window.bubbleColor = '#4b7bec';
             window.targetColor = '#fd9644';
             window.gameBackground = '#d1d8e0';
@@ -505,7 +505,7 @@ var loadGame = function (game, version) {
                 var curTime = new Date();
 
                 var row = studyLog.addRow();
-                row.setNum('Participant', document.getElementById('ParticipantField').value);
+                //row.setNum('Participant', document.getElementById('ParticipantField').value);
                 row.setNum('Trial', trial);
                 row.setString('Condition', mode);
                 row.setString('Time', curTime.toJSON());
@@ -522,12 +522,10 @@ var loadGame = function (game, version) {
                 running = true;
                 startTime = new Date();
                 startPosition = {x:mouseX, y:mouseY};
-                mode = document.querySelector('input[name="studyMode"]:checked').value;
-                if(mode == "bubble") {
-                    noCursor();
-                } else {
-                    cursor(ARROW);
-                }
+                //mode = document.querySelector('input[name="studyMode"]:checked').value;
+                cursor(ARROW);
+
+
             }
         }
     };
@@ -557,60 +555,30 @@ var loadGame = function (game, version) {
         background(window.gameBackground);
 
         if(!running) {
-            fill('#fed330');
-            stroke(75);
-            strokeWeight(2);
-            rect(startButtonArea.x, startButtonArea.y, startButtonArea.width, startButtonArea.height);
 
             cursor(HAND);
 
             noStroke();
-            fill(0);
+            fill('#fed330');
             textSize(18);
             textAlign(CENTER);
-            if(!window.experimentFinished)
-                text('Click mouse here\nto start next episode', startButtonArea.x + 0.5 * startButtonArea.width, startButtonArea.y + 0.5 * startButtonArea.height - 0.5);
+            if(!window.experimentFinished) {
+                rect(startButtonArea.x, startButtonArea.y, startButtonArea.width, startButtonArea.height);
+                fill(0);
+                stroke(75);
+                strokeWeight(2);
+
+                text('Click here\nto start next episode', startButtonArea.x + 0.5 * startButtonArea.width, startButtonArea.y + 0.5 * startButtonArea.height - 0.5);
+            }
             else{
-                text('Experiment finished.', startButtonArea.x + 0.5 * startButtonArea.width, startButtonArea.y + 0.5 * startButtonArea.height - 0.5);
+                //text('Experiment finished.', startButtonArea.x + 0.5 * startButtonArea.width, startButtonArea.y + 0.5 * startButtonArea.height - 0.5);
             }
         } else {
-            if(mode == "bubble") {
-                cursorSize = -1;
-                for(var i = 0; i < targets.length; ++i) {
-                    var distance = dist(mouseX, mouseY, targets[i].x, targets[i].y) - targets[i].r;
-                    if(cursorSize == -1 || distance < cursorSize) {
-                        cursorSize = distance;
-                    }
-                }
-
-                fill('#20bf6b');
-                noStroke();
-                ellipse(mouseX, mouseY, cursorSize * 2);
-
-                for(var i = 0; i < targets.length; ++i) {
-                    if(collideCircleCircle(mouseX, mouseY, cursorSize * 2, targets[i].x, targets[i].y, targets[i].r * 2)) {
-                        fill('#20bf6b');
-                        noStroke();
-                        ellipse(targets[i].x, targets[i].y, targets[i].r * 2 + 20);
-                    }
-                }
-            }
-
             // Update and display
             for (var i = 0; i < targets.length; i++) {
                 targets[i].update();
                 targets[i].display(i);
                 targets[i].checkEdges();
-            }
-
-
-
-
-            if(mode == "bubble") {
-                var crossSize = 6;
-                stroke(255);
-                line(mouseX - crossSize, mouseY, mouseX + crossSize, mouseY);
-                line(mouseX, mouseY - crossSize, mouseX, mouseY + crossSize);
             }
         }
     };
